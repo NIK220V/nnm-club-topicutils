@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.04
+// @version      0.05
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -137,7 +137,6 @@ if (elem.querySelector('a[href*="p="]')){
     var tpid = elem.querySelector('a[href*="p="]').href;
     elem.pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
     if (!elem.id || elem.id.indexOf('_') > 0  || elem.id.indexOf('0') >= 0) return;
-    if (elem.innerHTML.indexOf('icon_delete') < 0){
     var button = document.createElement('a');
     var msgid = elem.children[0].children[0].name;
     button.href = 'javascript:;';
@@ -152,7 +151,7 @@ if (elem.querySelector('a[href*="p="]')){
     box.style.verticalAlign = 'middle';
     box.msgid = msgid;
     box.onclick = function(){toggleRemovall(this.msgid);};
-    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);}
+    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);
     if (localStorage.getItem("NNMTopicUtils.FastEdit") == 'true' && elem.querySelector('a[href*="mode=editpost"]')){
     var editpost = elem.querySelector('a[href*="mode=editpost"]');
     editpost.href = 'javascript:;';
@@ -172,9 +171,13 @@ if (elem.querySelector('a[href*="p="]')){
 
 var warns = document.querySelectorAll('a[href*="warnings.php"]');
 for (var i = warns.length; i--;){
-    warns[i].pid = warns[i].href.substring(warns[i].href.indexOf('p=')+2, warns[i].href.indexOf('&mode'));
-    warns[i].href = 'javascript:;';
-    warns[i].onclick = function(){giveWarn(this);};
+    giveWarnBtn(warns[i]);
+}
+
+function giveWarnBtn(elem){
+    elem.pid = elem.href.substring(elem.href.indexOf('p=')+2, elem.href.indexOf('&mode'));
+    elem.href = 'javascript:;';
+    elem.onclick = function(){giveWarn(this);};
 }
 
 function isSure(id){
@@ -311,6 +314,7 @@ window.reshowMessage = function(message){
                 posters[i].remove();
             }
             giveButtons(message);
+            giveWarnBtn(message.querySelector('a[href*="warnings.php"]'));
             $(message).fadeIn(1000);
             $(submessage).fadeIn(1000);
             $(separator).fadeIn(1000);
