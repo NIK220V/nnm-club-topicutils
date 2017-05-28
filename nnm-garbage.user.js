@@ -152,7 +152,8 @@ for (var i = 0; i < c0.length; i++){
 var warns = document.querySelectorAll('a[href*="warnings.php"]');
 for (var i = warns.length; i--;){
     warns[i].pid = warns[i].href.substring(warns[i].href.indexOf('p=')+2, warns[i].href.indexOf('&mode'));
-    warns[i].href = 'javascript:giveWarn(this);';
+    warns[i].href = 'javascript:;';
+    warns[i].onclick = function(){giveWarn(this);};
 }
 
 function isSure(id){
@@ -207,7 +208,7 @@ function transferMessage(msgids) {
 
 window.giveWarn = function(elem){
     if (document.getElementById('nnmwarngiver')) document.getElementById('nnmwarngiver').remove();
-    var pid = elem.pid;
+    var pid = elem.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pid;
     var iframe = document.createElement('iframe');
     iframe.name = 'nnmwarniframe';
     iframe.style.display = 'none';
@@ -236,7 +237,7 @@ window.giveWarn = function(elem){
         if (!this.firstload) { this.firstload = true; return; }
         warn.children[0].style.display = 'none';
         $("#nnmwarngiver").fadeOut(1000);
-        reshowMessage(elem.parentNode.parentNode.parentNode.parentNode.parentNode);
+        reshowMessage(elem.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode);
         setTimeout(function(){
                 warn.remove();
         }, 1100);
