@@ -250,7 +250,6 @@ window.giveWarn = function(elem){
         submits[i].type='button';
         submits[i].onclick = function(e){
             $("#nnmwarngiver").fadeOut(1000);
-            reshowMessage();
             setTimeout(function(){
                 warn.remove();
             }, 1100);
