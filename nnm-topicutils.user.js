@@ -380,7 +380,9 @@ window.editMessage = function(message){
             bbedit.addTag("ecodeAlign", function(e) { var v=e.value; e.selectedIndex=0; return "align="+v; }, "/align");
             bbedit.addTag("ecodeList", function(e) { var v=e.value; e.selectedIndex=0; return "list"+v+"\][*"; }, "/list");
             bbedit.addTag("ecodeColor", function(e) { var v=e.value; e.selectedIndex=0; return "color="+v; }, "/color");
-            bbedit.addTag('ecodeMod', 'mod="NIK220V"', '/mod', 'm', ctrl);
+            var menuItems = document.querySelectorAll('a.mainmenu');
+            var user = menuItems[menuItems.length - 1].text.split(' ')[2];
+            bbedit.addTag('ecodeMod', 'mod="'+user+'"', '/mod', 'm', ctrl);
             message.children[1].appendChild(table);
             message.children[1].appendChild(iframe);
             $(message.children[1].children[0]).fadeIn(1000);
