@@ -136,7 +136,8 @@ function giveButtons(elem){
 if (elem.querySelector('a[href*="p="]')){
     var tpid = elem.querySelector('a[href*="p="]').href;
     elem.pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
-    if (!elem.id || elem.id.indexOf('_') > 0  || elem.id.indexOf('0') >= 0 || elem.innerHTML.indexOf('icon_delete') > 0) return;
+    if (!elem.id || elem.id.indexOf('_') > 0  || elem.id.indexOf('0') >= 0) return;
+    if (elem.innerHTML.indexOf('icon_delete') < 0){
     var button = document.createElement('a');
     var msgid = elem.children[0].children[0].name;
     button.href = 'javascript:;';
@@ -151,7 +152,7 @@ if (elem.querySelector('a[href*="p="]')){
     box.style.verticalAlign = 'middle';
     box.msgid = msgid;
     box.onclick = function(){toggleRemovall(this.msgid);};
-    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);
+    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);}
     if (localStorage.getItem("NNMTopicUtils.FastEdit") == 'true' && elem.querySelector('a[href*="mode=editpost"]')){
     var editpost = elem.querySelector('a[href*="mode=editpost"]');
     editpost.href = 'javascript:;';
