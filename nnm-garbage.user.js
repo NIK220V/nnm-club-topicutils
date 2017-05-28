@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         NNM Mod Delete
-// @namespace    NNMModDelete
+// @name         NNM Topic Utils
+// @namespace    NNMTopicUtils
 // @version      0.02
-// @description  Добавляет кнопки для  переноса в мусорку быстро и надёжно. И чекбоксы, для множественного переноса.
+// @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
 // @match        *://*.nnm-club.me/forum/viewtopic.php?*
