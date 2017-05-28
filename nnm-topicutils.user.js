@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.02
+// @version      0.04
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -129,26 +129,35 @@ function settingsDiv(){
 
 var c1 = [].slice.call(document.querySelectorAll('tr[class="row1"]')), c2 = [].slice.call(document.querySelectorAll('tr[class="row2"]')), c0 = c1.concat(c2);
 for (var i = 0; i < c0.length; i++){
-    if (c0[i].querySelector('a[href*="p="]')){
-    var tpid = c0[i].querySelector('a[href*="p="]').href;
-    c0[i].pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
-    if (!c0[i].id || c0[i].id.indexOf('_') > 0 || c0[i].innerHTML.indexOf('icon_delete') > 0) continue;
+    giveButtons(c0[i]);
+}
+
+function giveButtons(elem){
+if (elem.querySelector('a[href*="p="]')){
+    var tpid = elem.querySelector('a[href*="p="]').href;
+    elem.pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
+    if (!elem.id || elem.id.indexOf('_') > 0  || elem.id.indexOf('0') >= 0 || elem.innerHTML.indexOf('icon_delete') > 0) return;
     var button = document.createElement('a');
-    var msgid = c0[i].children[0].children[0].name;
+    var msgid = elem.children[0].children[0].name;
     button.href = 'javascript:;';
     button.className = 'nnmgarbage';
-    //button.innerHTML = '';
     button.msgid = msgid;
     button.onclick = function(){isSure(this);};
     button.title = 'Отправить сообщение в мусорку.\nОтправится только это сообщение.\nДа, оно не удалится, а перенесётся.';
-    if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') c0[i].children[1].children[0].children[0].children[0].children[1].appendChild(button);
+    if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(button);
     var box = document.createElement('input');
     box.type = 'checkbox';
     box.title = 'Выделить это сообщение.\nИспользуется для массового переноса в мусорку.';
     box.style.verticalAlign = 'middle';
     box.msgid = msgid;
     box.onclick = function(){toggleRemovall(this.msgid);};
-    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') c0[i].children[1].children[0].children[0].children[0].children[1].appendChild(box);
+    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);
+    if (elem.querySelector('a[href*="mode=editpost"]')){
+    var editpost = elem.querySelector('a[href*="mode=editpost"]');
+    editpost.href = 'javascript:;';
+    editpost.onclick = function(){
+        editMessage(this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode);
+    };}
 }
 
 var warns = document.querySelectorAll('a[href*="warnings.php"]');
@@ -264,7 +273,7 @@ window.giveWarn = function(elem){
     }
     }
     document.body.appendChild(warn);
-    $("#nnmwarngiver").fadeIn(1000);
+    $("#nnmwarngiver").fadeIn(500);
 };
 
 window.reshowMessage = function(message){
@@ -291,6 +300,7 @@ window.reshowMessage = function(message){
                 posterp.insertBefore(img, posters[i]);
                 posters[i].remove();
             }
+            giveButtons(message);
             $(message).fadeIn(1000);
             $(submessage).fadeIn(1000);
             $(separator).fadeIn(1000);
@@ -299,6 +309,70 @@ window.reshowMessage = function(message){
     xhr.open('GET', '//'+document.domain+'/forum/viewtopic.php?p='+pid, false);
     xhr.send();
 };
+
+window.editMessage = function(message){
+    var pid = message.pid;
+    var xhr = new XMLHttpRequest();
+    var iframe = document.createElement('iframe');
+    iframe.name = 'nnmeditpostiframe';
+    iframe.style.display = 'none';
+    iframe.onload = function(){
+        if (!this.firstload) { this.firstload = true; return; }
+        reshowMessage(message);
+        iframe.remove();
+    };
+    $(message.children[1].children[0]).fadeOut(1000);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE){
+            message.children[1].children[0].remove();
+            var doc = document.createElement('div');
+            doc.innerHTML = xhr.responseText;
+            var table = doc.querySelectorAll('table')[7];
+            var form = table.querySelector('form');
+            form.children[0].remove();
+            form.target = iframe.name;
+            table.style.display = 'none';
+            var handler = table.children[0].children[0].children[0];
+            handler.children[4].remove();
+            handler.children[3].remove();
+            handler.children[1].remove();
+            handler.querySelector('input[value="Предв. просмотр"]').remove();
+            handler.querySelector('input[value="Отправить"]').onclick = function(){
+                $(table).fadeOut(1000);
+            };
+            var codes = form.querySelectorAll('[name*="code"]');
+            for (var i = codes.length; i--;) codes[i].name = codes[i].name.replace('code', 'ecode');
+            var bbedit = new BBCode(handler.querySelector('textarea[name="message"]'));
+            var ctrl = "ctrl";
+            bbedit.addTag("ecodeB", "b", null, "B", ctrl);
+            bbedit.addTag("ecodeI", "i", null, "I", ctrl);
+            bbedit.addTag("ecodeU", "u", null, "U", ctrl);
+            bbedit.addTag("ecodeS", "s", null, "", ctrl);
+            bbedit.addTag("ecodeHR", "hr", "", "8", ctrl);
+            bbedit.addTag("ecodeQuote", "quote", null, "Q", ctrl);
+            bbedit.addTag("ecodeCode", "code", null, "K", ctrl);
+            bbedit.addTag("ecodeImg", "img", null, "R", ctrl);
+            bbedit.addTag("ecodeUrl", "url=", "/url", "", ctrl);
+            bbedit.addTag("ecodeHide", "hide=", "/hide", "", ctrl);
+            bbedit.addTag("ecodeSpoiler", "spoiler=", "/spoiler", "s", ctrl);
+            bbedit.addTag("ecodeTable", "table", null, "", ctrl);
+            bbedit.addTag("ecodeYouTube", "yt", "/yt", "", ctrl);
+            bbedit.addTag("fontFace", function(e) { var v=e.value; e.selectedIndex=0; return "font=\""+v+"\""; }, "/font");
+            bbedit.addTag("ecodeSize", function(e) { var v=e.value; e.selectedIndex=0; return "size="+v; }, "/size");
+            bbedit.addTag("ecodeAlign", function(e) { var v=e.value; e.selectedIndex=0; return "align="+v; }, "/align");
+            bbedit.addTag("ecodeList", function(e) { var v=e.value; e.selectedIndex=0; return "list"+v+"\][*"; }, "/list");
+            bbedit.addTag("ecodeColor", function(e) { var v=e.value; e.selectedIndex=0; return "color="+v; }, "/color");
+            bbedit.addTag('ecodeMod', 'mod="NIK220V"', '/mod', 'm', ctrl);
+            message.children[1].appendChild(table);
+            message.children[1].appendChild(iframe);
+            $(message.children[1].children[0]).fadeIn(1000);
+        }
+    };
+    xhr.open('GET', '//'+document.domain+'/forum/posting.php?mode=editpost&p='+pid, false);
+    xhr.send();
+};
+
+window.helpline = function(){};
 
 function nextChild(node){
     var i=1;
