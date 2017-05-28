@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.02
+// @version      0.04
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -19,6 +19,7 @@ if (document.querySelector('.menutable').innerText.indexOf('Вход') >= 0 || d
 if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") === null) localStorage.setItem("NNMModGarbage.ButtonsEnabled", false);
 if (localStorage.getItem("NNMModGarbage.BoxesEnabled") === null) localStorage.setItem("NNMModGarbage.BoxesEnabled", false);
 if (localStorage.getItem("NNMModGarbage.AskForSure") === null) localStorage.setItem("NNMModGarbage.AskForSure", true);
+if (localStorage.getItem("NNMTopicUtils.FastEdit") === null) localStorage.setItem("NNMTopicUtils.FastEdit", false);
 
 var DMap = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16, 17: 17, 18: 18, 19: 19, 20: 20, 21: 21, 22: 22, 23: 23, 24: 24, 25: 25, 26: 26, 27: 27, 28: 28, 29: 29, 30: 30, 31: 31, 32: 32, 33: 33, 34: 34, 35: 35, 36: 36, 37: 37, 38: 38, 39: 39, 40: 40, 41: 41, 42: 42, 43: 43, 44: 44, 45: 45, 46: 46, 47: 47, 48: 48, 49: 49, 50: 50, 51: 51, 52: 52, 53: 53, 54: 54, 55: 55, 56: 56, 57: 57, 58: 58, 59: 59, 60: 60, 61: 61, 62: 62, 63: 63, 64: 64, 65: 65, 66: 66, 67: 67, 68: 68, 69: 69, 70: 70, 71: 71, 72: 72, 73: 73, 74: 74, 75: 75, 76: 76, 77: 77, 78: 78, 79: 79, 80: 80, 81: 81, 82: 82, 83: 83, 84: 84, 85: 85, 86: 86, 87: 87, 88: 88, 89: 89, 90: 90, 91: 91, 92: 92, 93: 93, 94: 94, 95: 95, 96: 96, 97: 97, 98: 98, 99: 99, 100: 100, 101: 101, 102: 102, 103: 103, 104: 104, 105: 105, 106: 106, 107: 107, 108: 108, 109: 109, 110: 110, 111: 111, 112: 112, 113: 113, 114: 114, 115: 115, 116: 116, 117: 117, 118: 118, 119: 119, 120: 120, 121: 121, 122: 122, 123: 123, 124: 124, 125: 125, 126: 126, 127: 127, 1027: 129, 8225: 135, 1046: 198, 8222: 132, 1047: 199, 1168: 165, 1048: 200, 1113: 154, 1049: 201, 1045: 197, 1050: 202, 1028: 170, 160: 160, 1040: 192, 1051: 203, 164: 164, 166: 166, 167: 167, 169: 169, 171: 171, 172: 172, 173: 173, 174: 174, 1053: 205, 176: 176, 177: 177, 1114: 156, 181: 181, 182: 182, 183: 183, 8221: 148, 187: 187, 1029: 189, 1056: 208, 1057: 209, 1058: 210, 8364: 136, 1112: 188, 1115: 158, 1059: 211, 1060: 212, 1030: 178, 1061: 213, 1062: 214, 1063: 215, 1116: 157, 1064: 216, 1065: 217, 1031: 175, 1066: 218, 1067: 219, 1068: 220, 1069: 221, 1070: 222, 1032: 163, 8226: 149, 1071: 223, 1072: 224, 8482: 153, 1073: 225, 8240: 137, 1118: 162, 1074: 226, 1110: 179, 8230: 133, 1075: 227, 1033: 138, 1076: 228, 1077: 229, 8211: 150, 1078: 230, 1119: 159, 1079: 231, 1042: 194, 1080: 232, 1034: 140, 1025: 168, 1081: 233, 1082: 234, 8212: 151, 1083: 235, 1169: 180, 1084: 236, 1052: 204, 1085: 237, 1035: 142, 1086: 238, 1087: 239, 1088: 240, 1089: 241, 1090: 242, 1036: 141, 1041: 193, 1091: 243, 1092: 244, 8224: 134, 1093: 245, 8470: 185, 1094: 246, 1054: 206, 1095: 247, 1096: 248, 8249: 139, 1097: 249, 1098: 250, 1044: 196, 1099: 251, 1111: 191, 1055: 207, 1100: 252, 1038: 161, 8220: 147, 1101: 253, 8250: 155, 1102: 254, 8216: 145, 1103: 255, 1043: 195, 1105: 184, 1039: 143, 1026: 128, 1106: 144, 8218: 130, 1107: 131, 8217: 146, 1108: 186, 1109: 190};
 
@@ -46,8 +47,6 @@ var garbageid = 670;
 
 var temp = document.querySelector('a[href*="newtopic"]').href;
 var fromid = temp.substring(temp.indexOf('&f=')+3);
-
-//console.log(document.querySelector('.maintitle').href.substring(document.querySelector('.maintitle').href.indexOf('=')+1));
 
 if (garbageid == fromid) return;
 
@@ -107,48 +106,67 @@ function settingsDiv(){
     settings.style.marginRight = '-177px';
     settings.style.width = '300px';
     settings.style.backgroundColor = '#aec9e4';
-    settings.innerHTML = 'Скрипт добавляет чекбокс и кнопку для переноса сообщений в мусорку.'+
+    settings.innerHTML = 'Настройки скрипта NNM Topic Utils'+
         '<div><input type="checkbox" id="nnmgarbagebutton" onchange="localStorage.setItem(\'NNMModGarbage.ButtonsEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') ? 'checked' : '')+'>Добавлять кнопки?</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMModGarbage.BoxesEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') ? 'checked' : '')+'>Добавлять чекбоксы?</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMModGarbage.AskForSure\', this.checked);" '+((localStorage.getItem("NNMModGarbage.AskForSure") == 'true') ? 'checked' : '')+'>Подтверждать одиночное удаление?</div>'+
-        '<br><div align="center"><font color="green" onclick="document.getElementById(\'nnmgarbagesettings\').style.display = \'none\';"><b>Ok</b></font></div>';
+        '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMTopicUtils.FastEdit\', this.checked);" '+((localStorage.getItem("NNMTopicUtils.FastEdit") == 'true') ? 'checked' : '')+'>Быстрое редактирование вместо полного?</div>'+
+        '<br><div align="center"><font color="green" onclick="document.getElementById(\'nnmtopicutilssettings\').style.display = \'none\';"><b>Ok</b></font></div>';
     settings.style.border = '2px solid #2b4157';
     settings.style.borderRadius = '50px';
     settings.style.outline = 'none';
     settings.style.padding = '25px';
     settings.style.userSelect = 'none';
     settings.style.display = 'none';
-    settings.id = 'nnmgarbagesettings';
+    settings.id = 'nnmtopicutilssettings';
     document.body.appendChild(settings);
     var click = document.createElement('li');
-    click.innerHTML = '<a href="javascript:;" title="Показать меню настроек скрипта">NNMModGarbage</a>';
-    click.onclick = function(){document.getElementById('nnmgarbagesettings').style.display = '';};
+    click.innerHTML = '<a href="javascript:;" title="Показать меню настроек скрипта">NNM Topic Utils</a>';
+    click.onclick = function(){document.getElementById('nnmtopicutilssettings').style.display = '';};
     document.querySelectorAll('.menu')[1].style.width = '100%';
     document.querySelectorAll('.menu')[1].appendChild(click);
 }
 
 var c1 = [].slice.call(document.querySelectorAll('tr[class="row1"]')), c2 = [].slice.call(document.querySelectorAll('tr[class="row2"]')), c0 = c1.concat(c2);
 for (var i = 0; i < c0.length; i++){
-    if (c0[i].querySelector('a[href*="p="]')){
-    var tpid = c0[i].querySelector('a[href*="p="]').href;
-    c0[i].pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
-    if (!c0[i].id || c0[i].id.indexOf('_') > 0 || c0[i].innerHTML.indexOf('icon_delete') > 0) continue;
+    giveButtons(c0[i]);
+}
+
+function giveButtons(elem){
+if (elem.querySelector('a[href*="p="]')){
+    var tpid = elem.querySelector('a[href*="p="]').href;
+    elem.pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
+    if (!elem.id || elem.id.indexOf('_') > 0  || elem.id.indexOf('0') >= 0 || elem.innerHTML.indexOf('icon_delete') > 0) return;
     var button = document.createElement('a');
-    var msgid = c0[i].children[0].children[0].name;
+    var msgid = elem.children[0].children[0].name;
     button.href = 'javascript:;';
     button.className = 'nnmgarbage';
-    //button.innerHTML = '';
     button.msgid = msgid;
     button.onclick = function(){isSure(this);};
     button.title = 'Отправить сообщение в мусорку.\nОтправится только это сообщение.\nДа, оно не удалится, а перенесётся.';
-    if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') c0[i].children[1].children[0].children[0].children[0].children[1].appendChild(button);
+    if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(button);
     var box = document.createElement('input');
     box.type = 'checkbox';
     box.title = 'Выделить это сообщение.\nИспользуется для массового переноса в мусорку.';
     box.style.verticalAlign = 'middle';
     box.msgid = msgid;
     box.onclick = function(){toggleRemovall(this.msgid);};
-    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') c0[i].children[1].children[0].children[0].children[0].children[1].appendChild(box);
+    if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);
+    if (localStorage.getItem("NNMTopicUtils.FastEdit") == 'true' && elem.querySelector('a[href*="mode=editpost"]')){
+    var editpost = elem.querySelector('a[href*="mode=editpost"]');
+    editpost.href = 'javascript:;';
+    editpost.onmouseup = function(e){
+        if (e.which == 2){
+            e.preventDefault();
+            window.open('//'+document.domain+'/forum/posting.php?mode=editpost&p='+this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pid, '_blank');
+        } else
+        editMessage(this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode);
+    };
+    editpost.oncontextmenu = function(ev){
+        ev.preventDefault();
+        window.location.href = '//'+document.domain+'/forum/posting.php?mode=editpost&p='+this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pid;
+        return false;
+    };}
 }
 
 var warns = document.querySelectorAll('a[href*="warnings.php"]');
@@ -264,7 +282,7 @@ window.giveWarn = function(elem){
     }
     }
     document.body.appendChild(warn);
-    $("#nnmwarngiver").fadeIn(1000);
+    $("#nnmwarngiver").fadeIn(500);
 };
 
 window.reshowMessage = function(message){
@@ -291,6 +309,7 @@ window.reshowMessage = function(message){
                 posterp.insertBefore(img, posters[i]);
                 posters[i].remove();
             }
+            giveButtons(message);
             $(message).fadeIn(1000);
             $(submessage).fadeIn(1000);
             $(separator).fadeIn(1000);
@@ -299,6 +318,81 @@ window.reshowMessage = function(message){
     xhr.open('GET', '//'+document.domain+'/forum/viewtopic.php?p='+pid, false);
     xhr.send();
 };
+
+window.editMessage = function(message){
+    var pid = message.pid;
+    var xhr = new XMLHttpRequest();
+    var iframe = document.createElement('iframe');
+    iframe.name = 'nnmeditpostiframe';
+    iframe.style.display = 'none';
+    iframe.onload = function(){
+        if (!this.firstload) { this.firstload = true; return; }
+        message.children[1].children[0].remove();
+        reshowMessage(message);
+        iframe.remove();
+    };
+    $(message.children[1].children[0]).fadeOut(1000);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE){
+            message.children[1].children[0].remove();
+            var doc = document.createElement('div');
+            doc.innerHTML = xhr.responseText;
+            var table = doc.querySelectorAll('table')[7];
+            var form = table.querySelector('form');
+            form.children[0].remove();
+            form.target = iframe.name;
+            table.style.display = 'none';
+            var handler = table.children[0].children[0].children[0];
+            handler.children[4].remove();
+            handler.children[3].remove();
+            handler.children[1].remove();
+            var prev = handler.querySelector('input[value="Предв. просмотр"]');
+            prev.type = 'button';
+            prev.value = 'Отмена';
+            prev.name = 'cancel';
+            prev.onclick = function(){
+                table.remove();
+                iframe.remove();
+                reshowMessage(message);
+            };
+            handler.querySelector('input[value="Отправить"]').onclick = function(){
+                $(table).fadeOut(1000);
+            };
+            var codes = form.querySelectorAll('[name*="code"]');
+            for (var i = codes.length; i--;) codes[i].name = codes[i].name.replace('code', 'ecode');
+            var bbedit = new BBCode(handler.querySelector('textarea[name="message"]'));
+            var ctrl = "ctrl";
+            bbedit.addTag("ecodeB", "b", null, "B", ctrl);
+            bbedit.addTag("ecodeI", "i", null, "I", ctrl);
+            bbedit.addTag("ecodeU", "u", null, "U", ctrl);
+            bbedit.addTag("ecodeS", "s", null, "", ctrl);
+            bbedit.addTag("ecodeHR", "hr", "", "8", ctrl);
+            bbedit.addTag("ecodeQuote", "quote", null, "Q", ctrl);
+            bbedit.addTag("ecodeCode", "code", null, "K", ctrl);
+            bbedit.addTag("ecodeImg", "img", null, "R", ctrl);
+            bbedit.addTag("ecodeUrl", "url=", "/url", "", ctrl);
+            bbedit.addTag("ecodeHide", "hide=", "/hide", "", ctrl);
+            bbedit.addTag("ecodeSpoiler", "spoiler=", "/spoiler", "s", ctrl);
+            bbedit.addTag("ecodeTable", "table", null, "", ctrl);
+            bbedit.addTag("ecodeYouTube", "yt", "/yt", "", ctrl);
+            bbedit.addTag("fontFace", function(e) { var v=e.value; e.selectedIndex=0; return "font=\""+v+"\""; }, "/font");
+            bbedit.addTag("ecodeSize", function(e) { var v=e.value; e.selectedIndex=0; return "size="+v; }, "/size");
+            bbedit.addTag("ecodeAlign", function(e) { var v=e.value; e.selectedIndex=0; return "align="+v; }, "/align");
+            bbedit.addTag("ecodeList", function(e) { var v=e.value; e.selectedIndex=0; return "list"+v+"\][*"; }, "/list");
+            bbedit.addTag("ecodeColor", function(e) { var v=e.value; e.selectedIndex=0; return "color="+v; }, "/color");
+            var menuItems = document.querySelectorAll('a.mainmenu');
+            var user = menuItems[menuItems.length - 1].text.split(' ')[2];
+            bbedit.addTag('ecodeMod', 'mod="'+user+'"', '/mod', 'm', ctrl);
+            message.children[1].appendChild(table);
+            message.children[1].appendChild(iframe);
+            $(message.children[1].children[0]).fadeIn(1000);
+        }
+    };
+    xhr.open('GET', '//'+document.domain+'/forum/posting.php?mode=editpost&p='+pid, false);
+    xhr.send();
+};
+
+window.helpline = function(){};
 
 function nextChild(node){
     var i=1;
