@@ -314,7 +314,7 @@ window.reshowMessage = function(message){
                 posters[i].remove();
             }
             giveButtons(message);
-            giveWarnBtn(message.querySelector('a[href*="warnings.php"]'));
+            if (message.querySelector('a[href*="warnings.php"]')) giveWarnBtn(message.querySelector('a[href*="warnings.php"]'));
             $(message).fadeIn(1000);
             $(submessage).fadeIn(1000);
             $(separator).fadeIn(1000);
