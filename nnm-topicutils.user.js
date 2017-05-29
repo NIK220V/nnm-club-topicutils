@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.06
+// @version      0.07
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -139,8 +139,8 @@ function giveButtons(elem){
 if (elem.querySelector('a[href*="p="]')){
     var tpid = elem.querySelector('a[href*="p="]').href;
     elem.pid = tpid.substring(tpid.indexOf('p=')+2, tpid.indexOf('#'));}
-    if (localStorage.getItem("NNMTopicUtils.RemoveReports") == 'true' && elem.querySelector('a[href*="report.php"]')){
-        elem.querySelector('a[href*="report.php"]').remove();
+    if (localStorage.getItem("NNMTopicUtils.RemoveReports") == 'true' && elem.querySelector('a[href*="report.php?"]')){
+        elem.querySelector('a[href*="report.php?"]').remove();
     }
     if (localStorage.getItem("NNMTopicUtils.RemoveDeletes") == 'true' && elem.querySelector('a[href*="mode=delete"]')){
         elem.querySelector('a[href*="mode=delete"]').remove();
