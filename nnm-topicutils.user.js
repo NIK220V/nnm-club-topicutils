@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.07
+// @version      0.08
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -113,13 +113,13 @@ function settingsDiv(){
     settings.style.width = '300px';
     settings.style.backgroundColor = '#aec9e4';
     settings.innerHTML = 'Настройки скрипта NNM Topic Utils'+
-        '<div><input type="checkbox" id="nnmgarbagebutton" onchange="localStorage.setItem(\'NNMModGarbage.ButtonsEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') ? 'checked' : '')+'>Добавлять кнопки?</div>'+
-        '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMModGarbage.BoxesEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') ? 'checked' : '')+'>Добавлять чекбоксы?</div>'+
+        '<div><input type="checkbox" id="nnmgarbagebutton" onchange="localStorage.setItem(\'NNMModGarbage.ButtonsEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.ButtonsEnabled") == 'true') ? 'checked' : '')+'>Добавлять кнопки? (перенос в мусорку)</div>'+
+        '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMModGarbage.BoxesEnabled\', this.checked);" '+((localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') ? 'checked' : '')+'>Добавлять чекбоксы? (перенос в мусорку)</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMModGarbage.AskForSure\', this.checked);" '+((localStorage.getItem("NNMModGarbage.AskForSure") == 'true') ? 'checked' : '')+'>Подтверждать одиночное удаление?</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMTopicUtils.FastEdit\', this.checked);" '+((localStorage.getItem("NNMTopicUtils.FastEdit") == 'true') ? 'checked' : '')+'>Быстрое редактирование вместо полного?</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMTopicUtils.RemoveReports\', this.checked);" '+((localStorage.getItem("NNMTopicUtils.RemoveReports") == 'true') ? 'checked' : '')+'>Убирать кнопку репорта?</div>'+
         '<div><input type="checkbox" id="nnmgarbagebox" onchange="localStorage.setItem(\'NNMTopicUtils.RemoveDeletes\', this.checked);" '+((localStorage.getItem("NNMTopicUtils.RemoveDeletes") == 'true') ? 'checked' : '')+'>Убирать кнопку удалить?</div>'+
-        '<br><div align="center"><font color="green" onclick="location.reload();"><b>Применить</b></font>   <font color="cornflowerblue" onclick="document.getElementById(\'nnmtopicutilssettings\').remove();"><b>Закрыть</b></font></div>';
+        '<br><div align="center"><font color="green" onclick="location.reload();"><b  style="cursor:pointer;">Применить</b></font>   <font color="cornflowerblue" onclick="document.getElementById(\'nnmtopicutilssettings\').remove();"><b  style="cursor:pointer;">Закрыть</b></font></div>';
     settings.style.border = '2px solid #2b4157';
     settings.style.borderRadius = '50px';
     settings.style.outline = 'none';
