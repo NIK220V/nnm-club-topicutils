@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.07
+// @version      0.08
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
