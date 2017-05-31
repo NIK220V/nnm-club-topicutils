@@ -244,7 +244,7 @@ function toggleRemovall(msgid){
     setTopicMsgs(topicid, CheckedMessages);
 }
 
-function transferMessage(msgids) {
+window.transferMessage = function(msgids) {
     if (busy) return;
     busy = true;
     var menuItems = document.querySelectorAll('a.mainmenu');
@@ -263,7 +263,7 @@ function transferMessage(msgids) {
     xhr.open('POST', '//'+document.domain+'/forum/modcp.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send(data);
-}
+};
 
 function warnOptions(){
     var options = '<option value="0">Выбрать п.п из выпадающего списка</option>';
