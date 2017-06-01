@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.08
+// @version      0.09
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
+// @match        *://*.nnm-club.name/forum/viewtopic.php?*
 // @match        *://*.nnm-club.me/forum/viewtopic.php?*
 // @match        *://*.nnm-club.i2p.onion/forum/viewtopic.php?*
 // @match        *://*.nnmclub5toro7u65.onion/forum/viewtopic.php?*
@@ -19,9 +20,28 @@ if (document.querySelector('.menutable').innerText.indexOf('Вход') >= 0 || d
 if (localStorage.getItem("NNMModGarbage.ButtonsEnabled") === null) localStorage.setItem("NNMModGarbage.ButtonsEnabled", false);
 if (localStorage.getItem("NNMModGarbage.BoxesEnabled") === null) localStorage.setItem("NNMModGarbage.BoxesEnabled", false);
 if (localStorage.getItem("NNMModGarbage.AskForSure") === null) localStorage.setItem("NNMModGarbage.AskForSure", true);
+if (localStorage.getItem("NNMModGarbage.TopicHandler") === null) localStorage.setItem("NNMModGarbage.TopicHandler", "{}");
 if (localStorage.getItem("NNMTopicUtils.FastEdit") === null) localStorage.setItem("NNMTopicUtils.FastEdit", false);
 if (localStorage.getItem("NNMTopicUtils.RemoveReports") === null) localStorage.setItem("NNMTopicUtils.RemoveReports", true);
 if (localStorage.getItem("NNMTopicUtils.RemoveDeletes") === null) localStorage.setItem("NNMTopicUtils.RemoveDeletes", false);
+
+window.resetWarnOwnRules = function(event){
+    if (event) event.preventDefault();
+    localStorage.setItem("NNMTopicUtils.WarnOwnRules", '["2.1. Оскорбление пользователей.", "2.2. Нецензурная брань.", "2.3. Флейм, флуд, троллинг.", "2.8. Реклама и спам любого характера.", "2.9. Ссылки на другие ресурсы сети в любом виде.", "2.11. Проявление расовой, национальной или религиозной неприязни и ненависти.", "2.15. Публичное обсуждение действий или бездействий Модераторов.", "5.3. Если Вы не намерены подключаться к раздаче - не комментируйте ее.", "5.8. Неаргументированные высказывания о содержании вредоносных программ."]');
+};
+
+if (localStorage.getItem("NNMTopicUtils.WarnOwnRules") === null) resetWarnOwnRules();
+
+function getTopicMsgs(id){
+    var handle = JSON.parse(localStorage.getItem("NNMModGarbage.TopicHandler"));
+    if (handle[id]) return handle[id]; else return Array();
+}
+
+window.setTopicMsgs = function(id, value){
+    var handle = JSON.parse(localStorage.getItem("NNMModGarbage.TopicHandler"));
+    handle[id] = value;
+    localStorage.setItem("NNMModGarbage.TopicHandler", JSON.stringify(handle));
+};
 
 var DMap = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16, 17: 17, 18: 18, 19: 19, 20: 20, 21: 21, 22: 22, 23: 23, 24: 24, 25: 25, 26: 26, 27: 27, 28: 28, 29: 29, 30: 30, 31: 31, 32: 32, 33: 33, 34: 34, 35: 35, 36: 36, 37: 37, 38: 38, 39: 39, 40: 40, 41: 41, 42: 42, 43: 43, 44: 44, 45: 45, 46: 46, 47: 47, 48: 48, 49: 49, 50: 50, 51: 51, 52: 52, 53: 53, 54: 54, 55: 55, 56: 56, 57: 57, 58: 58, 59: 59, 60: 60, 61: 61, 62: 62, 63: 63, 64: 64, 65: 65, 66: 66, 67: 67, 68: 68, 69: 69, 70: 70, 71: 71, 72: 72, 73: 73, 74: 74, 75: 75, 76: 76, 77: 77, 78: 78, 79: 79, 80: 80, 81: 81, 82: 82, 83: 83, 84: 84, 85: 85, 86: 86, 87: 87, 88: 88, 89: 89, 90: 90, 91: 91, 92: 92, 93: 93, 94: 94, 95: 95, 96: 96, 97: 97, 98: 98, 99: 99, 100: 100, 101: 101, 102: 102, 103: 103, 104: 104, 105: 105, 106: 106, 107: 107, 108: 108, 109: 109, 110: 110, 111: 111, 112: 112, 113: 113, 114: 114, 115: 115, 116: 116, 117: 117, 118: 118, 119: 119, 120: 120, 121: 121, 122: 122, 123: 123, 124: 124, 125: 125, 126: 126, 127: 127, 1027: 129, 8225: 135, 1046: 198, 8222: 132, 1047: 199, 1168: 165, 1048: 200, 1113: 154, 1049: 201, 1045: 197, 1050: 202, 1028: 170, 160: 160, 1040: 192, 1051: 203, 164: 164, 166: 166, 167: 167, 169: 169, 171: 171, 172: 172, 173: 173, 174: 174, 1053: 205, 176: 176, 177: 177, 1114: 156, 181: 181, 182: 182, 183: 183, 8221: 148, 187: 187, 1029: 189, 1056: 208, 1057: 209, 1058: 210, 8364: 136, 1112: 188, 1115: 158, 1059: 211, 1060: 212, 1030: 178, 1061: 213, 1062: 214, 1063: 215, 1116: 157, 1064: 216, 1065: 217, 1031: 175, 1066: 218, 1067: 219, 1068: 220, 1069: 221, 1070: 222, 1032: 163, 8226: 149, 1071: 223, 1072: 224, 8482: 153, 1073: 225, 8240: 137, 1118: 162, 1074: 226, 1110: 179, 8230: 133, 1075: 227, 1033: 138, 1076: 228, 1077: 229, 8211: 150, 1078: 230, 1119: 159, 1079: 231, 1042: 194, 1080: 232, 1034: 140, 1025: 168, 1081: 233, 1082: 234, 8212: 151, 1083: 235, 1169: 180, 1084: 236, 1052: 204, 1085: 237, 1035: 142, 1086: 238, 1087: 239, 1088: 240, 1089: 241, 1090: 242, 1036: 141, 1041: 193, 1091: 243, 1092: 244, 8224: 134, 1093: 245, 8470: 185, 1094: 246, 1054: 206, 1095: 247, 1096: 248, 8249: 139, 1097: 249, 1098: 250, 1044: 196, 1099: 251, 1111: 191, 1055: 207, 1100: 252, 1038: 161, 8220: 147, 1101: 253, 8250: 155, 1102: 254, 8216: 145, 1103: 255, 1043: 195, 1105: 184, 1039: 143, 1026: 128, 1106: 144, 8218: 130, 1107: 131, 8217: 146, 1108: 186, 1109: 190};
 
@@ -38,11 +58,23 @@ function encodeString(s) {
 
 var sendval = 'subject=%topictitle%&new_forum_id=%forumto%&after_split_to_new=%msgids%&confirm=1&split_type_all=%splittype%&sid=%sid%&f=%forumfrom%&t=%topicid%&mode=split';
 
-var warnval = '<form action="warnings.php" name="post" method="post"><table><tbody><tr> <th class="thHead" colspan="2" height="25">Выдать пользователю предупреждение</th></tr><tr> <td width="48%" class="row1"><span class="genmed"><b>Что</b></span></td><td class="row2"><span class="genmed"><input type="radio" name="warning_type" value="1" checked="checked"> Предупреждение <input type="radio" name="warning_type" value="2"> Бан <input type="radio" name="warning_type" value="3"> <s>Только чтение</s></span></td></tr><tr> <td class="row1"><span class="genmed"><b>Продолжительность</b></span></td><td class="row2"><span class="genmed"><select name="warning_time"><option value="86400">1 день</option><option value="259200">3 дня</option><option value="432000">5 дней</option><option value="604800">7 дней</option></select></span> | <select class="post" style="max-width:345px" title="Наиболее частые нарушения для быстрой вставки" onchange="document.getElementById(\'tx\').value +=options[selectedIndex].text + \'\'; options[0].selected=true;"> <option value="0">Выбрать п.п из выпадающего списка</option><option value="1">2.1. Оскорбление пользователей.</option><option value="2">2.2. Нецензурная брань.</option><option value="3">2.3. Флейм, флуд, троллинг.</option><option value="4">2.8. Реклама и спам любого характера.</option><option value="5">2.9. Ссылки на другие ресурсы сети в любом виде.</option><option value="6">2.11. Проявление расовой, национальной или религиозной неприязни и ненависти.</option><option value="7">2.15. Публичное обсуждение действий или бездействий Модераторов.</option><option value="8">5.3. Если Вы не намерены подключаться к раздаче - не комментируйте ее.</option><option value="9">5.8. Неаргументированные высказывания о содержании вредоносных программ.</option></select></td></tr><tr> <td class="row1"><span class="genmed"><b>Текст<br><br><span style="color:red">1. Обязательно указывайте пункт нарушенных <a target="blank" href="viewtopic.php?t=867">Правил</a>.<br>2. Комментарий должен быть кратким, допустимо цитирование п.п или его часть.<br>3. Не применяйте теги или ссылки, здесь они не работают.</span></b></span></td><td class="row2"><span class="genmed"><textarea id="tx" name="warning_text" rows="15" cols="35" wrap="virtual" style="width:450px" class="post"></textarea></span></td></tr><tr> <td class="catBottom" colspan="2" align="center" height="28"> <input type="hidden" name="sid" value="%sid%"><input type="hidden" name="p" value="%pid%"><input type="hidden" name="mode" value="add_warning"><input type="submit" name="add_warning" class="mainoption" value="Выдать пользователю предупреждение">&nbsp;<input type="submit" name="cancel" class="mainoption" value="Отменить"></td></tr></tbody></table></form>';
+var warnval = '<form action="warnings.php" name="post" method="post"><table><tbody><tr> <th class="thHead" colspan="2" height="25">Выдать пользователю предупреждение</th></tr><tr> <td width="48%" class="row1"><span class="genmed"><b>Что</b></span></td><td class="row2"><span class="genmed"><input type="radio" name="warning_type" value="1" checked="checked"> Предупреждение <input type="radio" name="warning_type" value="2"> Бан <input type="radio" name="warning_type" value="3"> <s>Только чтение</s></span></td></tr><tr> <td class="row1"><span class="genmed"><b>Продолжительность</b></span></td><td class="row2"><span class="genmed"><select name="warning_time"><option value="86400">1 день</option><option value="259200">3 дня</option><option value="432000">5 дней</option><option value="604800">7 дней</option></select></span> | <select class="post" style="max-width:345px" title="Наиболее частые нарушения для быстрой вставки" onchange="onWarnRuleChange(this);">%options%</select> | <button title="Добавить собственное правило в список\n(Правила короче 5 символов не добавятся)" onclick="newWarnRuleAdder(event, this.parentNode);">+</button> | <button title="Удалить последнее правило из списка" onclick="removeLatestWarnRule(event, this);">-</button> | <button title="Сбросить список на стандартный\n(Для применения откройте это окно вновь)" onclick="resetWarnOwnRules(event);">R</button></td></tr><tr> <td class="row1"><span class="genmed"><b>Текст<br><br><span style="color:red">1. Обязательно указывайте пункт нарушенных <a target="blank" href="viewtopic.php?t=867">Правил</a>.<br>2. Комментарий должен быть кратким, допустимо цитирование п.п или его часть.<br>3. Не применяйте теги или ссылки, здесь они не работают.</span></b></span></td><td class="row2"><span class="genmed"><textarea id="tx" name="warning_text" rows="15" cols="35" wrap="virtual" style="width:450px" class="post"></textarea></span></td></tr><tr> <td class="catBottom" colspan="2" align="center" height="28"> <input type="hidden" name="sid" value="%sid%"><input type="hidden" name="p" value="%pid%"><input type="hidden" name="mode" value="add_warning"><input type="submit" name="add_warning" class="mainoption" value="Выдать пользователю предупреждение">&nbsp;<input type="submit" name="cancel" class="mainoption" value="Отменить"></td></tr></tbody></table></form>';
+
+var gbgval = '<button title="Сбросить выделенные сообщения в этой теме" onclick="resetGarbageMsgs();" style="cursor:pointer;">R</button>Выделено: %amt% <a title="Отправить все выделенные сообщения в мусорку.\nПодтверждение не спрашивается." class="nnmgarbage" style="cursor:pointer;" onclick="transferMessage(CheckedMessages);">';
 
 var busy = false;
 
-window.CheckedMessages = [];
+window.resetGarbageMsgs = function(){
+    CheckedMessages=[];
+    setTopicMsgs(topicid, CheckedMessages);
+    var boxes = document.querySelectorAll('input[title*="Выделить это сообщение."]');
+    for (var i = boxes.length; i--;) boxes[i].checked=false;
+    document.getElementById('nnmgarbagesend').style.display = 'none';
+};
+
+window.topicid = document.querySelector('.maintitle').href.substring(document.querySelector('.maintitle').href.indexOf('=')+1);
+
+window.CheckedMessages = getTopicMsgs(topicid);
 
 // ID Форума в который будет переносить сообщение. Сейчас у Мусорки ID 670.
 var garbageid = 670;
@@ -81,20 +113,17 @@ document.head.appendChild(css);
 var btn = document.createElement('div');
 btn.style.zIndex = 500;
 btn.style.position = 'fixed';
-btn.style.cursor = 'pointer';
 btn.style.right = '50px';
 btn.style.bottom = '20px';
 btn.style.backgroundColor = '#aec9e4';
-btn.innerHTML = '<a class="nnmgarbage">';
+btn.innerHTML = gbgval.replaceAll('%amt%', CheckedMessages.length);
 btn.href = 'javascript;';
 btn.style.border = '1px solid #2b4157';
 btn.style.outline = 'none';
 btn.style.padding = '3px';
 btn.style.userSelect = 'none';
-btn.style.display = 'none';
-btn.title = 'Отправить все выделенные сообщения в мусорку.\nПодтверждение не спрашивается.';
+btn.style.display = (CheckedMessages.length === 0) ? 'none' : 'block';
 btn.id = 'nnmgarbagesend';
-btn.onclick = function(){transferMessage(CheckedMessages);};
 document.body.appendChild(btn);
 
 var click = document.createElement('li');
@@ -159,6 +188,7 @@ if (elem.querySelector('a[href*="p="]')){
     box.title = 'Выделить это сообщение.\nИспользуется для массового переноса в мусорку.';
     box.style.verticalAlign = 'middle';
     box.msgid = msgid;
+    box.checked = (CheckedMessages.indexOf(elem.pid) >= 0);
     box.onclick = function(){toggleRemovall(this.msgid);};
     if (localStorage.getItem("NNMModGarbage.BoxesEnabled") == 'true') elem.children[1].children[0].children[0].children[0].children[1].appendChild(box);
     if (localStorage.getItem("NNMTopicUtils.FastEdit") == 'true' && elem.querySelector('a[href*="mode=editpost"]')){
@@ -213,16 +243,18 @@ function toggleRemovall(msgid){
         CheckedMessages.remove(msgid);
     else
         CheckedMessages.push(msgid);
-    if (CheckedMessages.length > 0)
+    if (CheckedMessages.length > 0){
+        document.getElementById('nnmgarbagesend').innerHTML = gbgval.replaceAll('%amt%', CheckedMessages.length);
         document.getElementById('nnmgarbagesend').style.display = '';
-    else
+    } else{
         document.getElementById('nnmgarbagesend').style.display = 'none';
+    }
+    setTopicMsgs(topicid, CheckedMessages);
 }
 
-function transferMessage(msgids) {
+window.transferMessage = function(msgids) {
     if (busy) return;
     busy = true;
-    var topicid = document.querySelector('.maintitle').href.substring(document.querySelector('.maintitle').href.indexOf('=')+1);
     var menuItems = document.querySelectorAll('a.mainmenu');
     var user = menuItems[menuItems.length - 1].text.split(' ')[2];
     var msgreplacer = '';
@@ -231,12 +263,21 @@ function transferMessage(msgids) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == XMLHttpRequest.DONE){
+            CheckedMessages=[];
+            setTopicMsgs(topicid, CheckedMessages);
             location.reload();
         }
     };
     xhr.open('POST', '//'+document.domain+'/forum/modcp.php', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send(data);
+};
+
+function warnOptions(){
+    var options = '<option value="0">Выбрать п.п из выпадающего списка</option>';
+    var ophandlers = JSON.parse(localStorage.getItem("NNMTopicUtils.WarnOwnRules"));
+    for (var i = 0; i < ophandlers.length; i++) options+='<option value="%num%">%val%</option>'.replaceAll('%num%', i+1).replaceAll('%val%', ophandlers[i]);
+    return options;
 }
 
 window.giveWarn = function(elem){
@@ -258,7 +299,7 @@ window.giveWarn = function(elem){
     warn.style.marginRight = '-550px';
     warn.style.width = '1100px';
     warn.style.backgroundColor = '#e8eff7';
-    warn.innerHTML = warnval.replaceAll('%sid%', sid).replaceAll('%pid%', pid);
+    warn.innerHTML = warnval.replaceAll('%sid%', sid).replaceAll('%pid%', pid).replaceAll('%options%', warnOptions());
     warn.style.border = '2px solid #2b4157';
     warn.style.borderRadius = '10px';
     warn.style.outline = 'none';
@@ -322,6 +363,7 @@ window.reshowMessage = function(message){
                 posterp.insertBefore(img, posters[i]);
                 posters[i].remove();
             }
+            initSpoilers(message);
             giveButtons(message);
             if (message.querySelector('a[href*="warnings.php"]')) giveWarnBtn(message.querySelector('a[href*="warnings.php"]'));
             $(message).fadeIn(1000);
@@ -407,6 +449,43 @@ window.editMessage = function(message){
 };
 
 window.helpline = function(){};
+
+window.onWarnRuleChange = function(elem){
+    document.getElementById('tx').value += elem.children[elem.selectedIndex].text + "\n";
+    elem.children[0].selected = true;
+};
+
+window.newWarnRuleAdder = function(event, parent){
+    event.preventDefault();
+    if (document.getElementById('nnmnewruleadder')) document.getElementById('nnmnewruleadder').remove();
+    var adder = document.createElement('textarea');
+    adder.id = 'nnmnewruleadder';
+    adder.rows = 1;
+    adder.cols = 35;
+    adder.style.width = '450px';
+    adder.className = 'post';
+    adder.onchange = function(){
+        adder.disabled = true;
+        if (adder.value.length > 5){
+            var haverules = JSON.parse(localStorage.getItem("NNMTopicUtils.WarnOwnRules"));
+            haverules.push(adder.value);
+            localStorage.setItem("NNMTopicUtils.WarnOwnRules", JSON.stringify(haverules));
+            adder.parentNode.children[1].innerHTML = warnOptions();
+        }
+        adder.remove();
+    };
+    parent.appendChild(adder);
+};
+
+window.removeLatestWarnRule = function(event, elem){
+    event.preventDefault();
+    var haverules = JSON.parse(localStorage.getItem("NNMTopicUtils.WarnOwnRules"));
+    if (haverules.length > 0){
+        haverules.pop();
+        localStorage.setItem("NNMTopicUtils.WarnOwnRules", JSON.stringify(haverules));
+        elem.parentNode.children[1].innerHTML = warnOptions();
+    }
+};
 
 function nextChild(node){
     var i=1;
