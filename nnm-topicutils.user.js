@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.09
+// @version      0.10
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -56,13 +56,10 @@ function encodeString(s) {
     return L.join('').toUpperCase();
 }
 
-var sendval = 'subject=%topictitle%&new_forum_id=%forumto%&after_split_to_new=%msgids%&confirm=1&split_type_all=%splittype%&sid=%sid%&f=%forumfrom%&t=%topicid%&mode=split';
-
-var warnval = '<form action="warnings.php" name="post" method="post"><table><tbody><tr> <th class="thHead" colspan="2" height="25">Выдать пользователю предупреждение</th></tr><tr> <td width="48%" class="row1"><span class="genmed"><b>Что</b></span></td><td class="row2"><span class="genmed"><input type="radio" name="warning_type" value="1" checked="checked"> Предупреждение <input type="radio" name="warning_type" value="2"> Бан <input type="radio" name="warning_type" value="3"> <s>Только чтение</s></span></td></tr><tr> <td class="row1"><span class="genmed"><b>Продолжительность</b></span></td><td class="row2"><span class="genmed"><select name="warning_time"><option value="86400">1 день</option><option value="259200">3 дня</option><option value="432000">5 дней</option><option value="604800">7 дней</option></select></span> | <select class="post" style="max-width:345px" title="Наиболее частые нарушения для быстрой вставки" onchange="onWarnRuleChange(this);">%options%</select> | <button title="Добавить собственное правило в список\n(Правила короче 5 символов не добавятся)" onclick="newWarnRuleAdder(event, this.parentNode);">+</button> | <button title="Удалить последнее правило из списка" onclick="removeLatestWarnRule(event, this);">-</button> | <button title="Сбросить список на стандартный\n(Для применения откройте это окно вновь)" onclick="resetWarnOwnRules(event);">R</button></td></tr><tr> <td class="row1"><span class="genmed"><b>Текст<br><br><span style="color:red">1. Обязательно указывайте пункт нарушенных <a target="blank" href="viewtopic.php?t=867">Правил</a>.<br>2. Комментарий должен быть кратким, допустимо цитирование п.п или его часть.<br>3. Не применяйте теги или ссылки, здесь они не работают.</span></b></span></td><td class="row2"><span class="genmed"><textarea id="tx" name="warning_text" rows="15" cols="35" wrap="virtual" style="width:450px" class="post"></textarea></span></td></tr><tr> <td class="catBottom" colspan="2" align="center" height="28"> <input type="hidden" name="sid" value="%sid%"><input type="hidden" name="p" value="%pid%"><input type="hidden" name="mode" value="add_warning"><input type="submit" name="add_warning" class="mainoption" value="Выдать пользователю предупреждение">&nbsp;<input type="submit" name="cancel" class="mainoption" value="Отменить"></td></tr></tbody></table></form>';
-
-var gbgval = '<button title="Сбросить выделенные сообщения в этой теме" onclick="resetGarbageMsgs();" style="cursor:pointer;">R</button>Выделено: %amt% <a title="Отправить все выделенные сообщения в мусорку.\nПодтверждение не спрашивается." class="nnmgarbage" style="cursor:pointer;" onclick="transferMessage(CheckedMessages);">';
-
-var busy = false;
+var sendval = 'subject=%topictitle%&new_forum_id=%forumto%&after_split_to_new=%msgids%&confirm=1&split_type_all=%splittype%&sid=%sid%&f=%forumfrom%&t=%topicid%&mode=split',
+warnval = '<form action="warnings.php" name="post" method="post"><table><tbody><tr> <th class="thHead" colspan="2" height="25">Выдать пользователю предупреждение</th></tr><tr> <td width="48%" class="row1"><span class="genmed"><b>Что</b></span></td><td class="row2"><span class="genmed"><input type="radio" name="warning_type" value="1" checked="checked"> Предупреждение <input type="radio" name="warning_type" value="2"> Бан <input type="radio" name="warning_type" value="3"> <s>Только чтение</s></span></td></tr><tr> <td class="row1"><span class="genmed"><b>Продолжительность</b></span></td><td class="row2"><span class="genmed"><select name="warning_time"><option value="86400">1 день</option><option value="259200">3 дня</option><option value="432000">5 дней</option><option value="604800">7 дней</option></select></span> | <select class="post" style="max-width:345px" title="Наиболее частые нарушения для быстрой вставки" onchange="onWarnRuleChange(this);">%options%</select> | <button title="Добавить собственное правило в список\n(Правила короче 5 символов не добавятся)" onclick="newWarnRuleAdder(event, this.parentNode);">+</button> | <button title="Удалить последнее правило из списка" onclick="removeLatestWarnRule(event, this);">-</button> | <button title="Сбросить список на стандартный\n(Для применения откройте это окно вновь)" onclick="resetWarnOwnRules(event);">R</button></td></tr><tr> <td class="row1"><span class="genmed"><b>Текст<br><br><span style="color:red">1. Обязательно указывайте пункт нарушенных <a target="blank" href="viewtopic.php?t=867">Правил</a>.<br>2. Комментарий должен быть кратким, допустимо цитирование п.п или его часть.<br>3. Не применяйте теги или ссылки, здесь они не работают.</span></b></span></td><td class="row2"><span class="genmed"><textarea id="tx" name="warning_text" rows="15" cols="35" wrap="virtual" style="width:450px" class="post"></textarea></span></td></tr><tr> <td class="catBottom" colspan="2" align="center" height="28"> <input type="hidden" name="sid" value="%sid%"><input type="hidden" name="p" value="%pid%"><input type="hidden" name="mode" value="add_warning"><input type="submit" name="add_warning" class="mainoption" value="Выдать пользователю предупреждение">&nbsp;<input type="submit" name="cancel" class="mainoption" value="Отменить"></td></tr></tbody></table></form>',
+gbgval = '<button title="Сбросить выделенные сообщения в этой теме" onclick="resetGarbageMsgs();" style="cursor:pointer;">R</button>Выделено: %amt% <a title="Отправить все выделенные сообщения в мусорку.\nПодтверждение не спрашивается." class="nnmgarbage" style="cursor:pointer;" onclick="transferMessage(CheckedMessages);">',
+busy = false;
 
 window.resetGarbageMsgs = function(){
     CheckedMessages=[];
@@ -111,7 +108,7 @@ css.innerText = "a.nnmgarbage{display:inline-block;width:72px;height:18px;vertic
 document.head.appendChild(css);
 
 var btn = document.createElement('div');
-btn.style.zIndex = 500;
+btn.style.zIndex = 1e8;
 btn.style.position = 'fixed';
 btn.style.right = '50px';
 btn.style.bottom = '20px';
@@ -134,7 +131,7 @@ document.querySelectorAll('.menu')[1].appendChild(click);
 
 function settingsDiv(){
     var settings = document.createElement('div');
-    settings.style.zIndex = 500;
+    settings.style.zIndex = 1e8;
     settings.style.position = 'fixed';
     settings.style.right = '50%';
     settings.style.top = '20%';
@@ -195,14 +192,14 @@ if (elem.querySelector('a[href*="p="]')){
     var editpost = elem.querySelector('a[href*="mode=editpost"]');
     editpost.href = 'javascript:;';
     editpost.onmouseup = function(e){
+        console.log(e.which);
         if (e.which == 2){
-            e.preventDefault();
             window.open('//'+document.domain+'/forum/posting.php?mode=editpost&p='+this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pid, '_blank');
-        } else
-        editMessage(this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode);
+        } else if (e.which == 1)
+            editMessage(this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode);
+        return false;
     };
     editpost.oncontextmenu = function(ev){
-        ev.preventDefault();
         window.location.href = '//'+document.domain+'/forum/posting.php?mode=editpost&p='+this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pid;
         return false;
     };}
@@ -292,7 +289,7 @@ window.giveWarn = function(elem){
     loader.style.margin = 'auto';
     var warn = document.createElement('div');
     warn.style.display = 'none';
-    warn.style.zIndex = 500;
+    warn.style.zIndex = 1e8;
     warn.style.position = 'fixed';
     warn.style.right = '50%';
     warn.style.top = '30%';
@@ -497,3 +494,14 @@ function nextChild(node){
     }
     return node.parentNode.children[i];
 }
+
+// Экспериментальная часть - убирает из ссылок топика sid.
+function removeSid(){
+    var word = null;
+    if (location.href.indexOf('&sid=') >= 0) word = '&'; else if (location.href.indexOf('?sid=') >= 0) word = '?';
+    if (word){
+        window.history.pushState({}, document.title, location.href.replace(word+'sid='+sid, ''));
+    }
+}
+
+removeSid();
