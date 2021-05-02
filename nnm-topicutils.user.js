@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NNM Topic Utils
 // @namespace    NNMTopicUtils
-// @version      0.10
+// @version      0.11
 // @description  Полезные функции для модерирования в топиках. Подробнее в README.MD
 // @author       NIK220V
 // @match        *://*.nnmclub.to/forum/viewtopic.php?*
@@ -370,6 +370,8 @@ window.reshowMessage = function(message){
     };
     xhr.open('GET', '//'+document.domain+'/forum/viewtopic.php?p='+pid, false);
     xhr.send();
+    window.location.reload();
+
 };
 
 window.editMessage = function(message){
